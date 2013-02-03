@@ -11,6 +11,9 @@ __all__ = ['Greenlet',
            'killall']
 
 
+_NONE = Exception("Neither exception nor value")
+
+
 class SpawnedLink(object):
     """A wrapper around link that calls it in another greenlet.
 
@@ -71,6 +74,12 @@ class FailureSpawnedLink(SpawnedLink):
 class Greenlet(greenlet):
     """A light-weight cooperatively-scheduled execution unit."""
 
+    value = None
+    _exception = _NONE
+    _traceback = None
+    _notifier = None
+    _start_event = None
+
     def __init__(self, run=None, *args, **kwargs):
         hub = get_hub()
         greenlet.__init__(self, parent=hub)
@@ -79,11 +88,6 @@ class Greenlet(greenlet):
         self.args = args
         self.kwargs = kwargs
         self._links = deque()
-        self.value = None
-        self._exception = _NONE
-        self._traceback = None
-        self._notifier = None
-        self._start_event = None
 
     @property
     def loop(self):
@@ -474,6 +478,3 @@ def getfuncname(func):
             if funcname != '<lambda>':
                 return funcname
     return repr(func)
-
-
-_NONE = Exception("Neither exception nor value")
