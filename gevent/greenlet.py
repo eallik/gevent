@@ -82,7 +82,6 @@ class Greenlet(greenlet):
         self.value = None
         self._exception = _NONE
         self._traceback = None
-        loop = hub.loop
         self._notifier = None
         self._start_event = None
 
